@@ -94,35 +94,47 @@
     paginationList = "";
  
     $.fn.transformPage = function(settings, pos) {
-      if ( ! $.support.transition ) {
-        $(this).animate(
-          {
-           'top': pos + '%'
-          },
-          200
-        );
 
-        return;
+      var toppos = (el.height()/100)*pos;
+  
+      // Just a simple edit that makes use of modernizr to detect an IE8 browser and changes the transform method into 
+      // an top animate so IE8 users can also use this script.
+      if($('html').hasClass('ie8')){
+        $(this).animate({top: toppos+'px'},settings.animationTime);
       }
-      $(this).addClass('onepage-transform').css({
-        "-webkit-transform": "translate3d(0, " + pos + "%, 0)", 
-        "-webkit-transition": "all " + settings.animationTime + "ms " + settings.easing,
-        "-moz-transform": "translate3d(0, " + pos + "%, 0)", 
-        "-moz-transition": "all " + settings.animationTime + "ms " + settings.easing,
-        "-ms-transform": "translate3d(0, " + pos + "%, 0)", 
-        "-ms-transition": "all " + settings.animationTime + "ms " + settings.easing,
-        "transform": "translate3d(0, " + pos + "%, 0)", 
-        "transition": "all " + settings.animationTime + "ms " + settings.easing
-      });
-    };
+      else {
 
-    el.on('transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd', function(ev){
-      if ($(this).is('.onepage-transform')) {
-        el.trigger('onepagescroll.animation.ends', {
-          originalEvent: ev
+        if ( ! $.support.transition ) {
+          $(this).animate(
+            {
+             'top': pos + '%'
+            },
+            200
+          );
+
+          return;
+        }
+        $(this).addClass('onepage-transform').css({
+          "-webkit-transform": "translate3d(0, " + pos + "%, 0)", 
+          "-webkit-transition": "all " + settings.animationTime + "ms " + settings.easing,
+          "-moz-transform": "translate3d(0, " + pos + "%, 0)", 
+          "-moz-transition": "all " + settings.animationTime + "ms " + settings.easing,
+          "-ms-transform": "translate3d(0, " + pos + "%, 0)", 
+          "-ms-transition": "all " + settings.animationTime + "ms " + settings.easing,
+          "transform": "translate3d(0, " + pos + "%, 0)", 
+          "transition": "all " + settings.animationTime + "ms " + settings.easing
         });
-      }
-    });
+
+        el.on('transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd', function(ev){
+          if ($(this).is('.onepage-transform')) {
+            el.trigger('onepagescroll.animation.ends', {
+              originalEvent: ev
+            });
+          }
+        });
+
+      };
+    }
     
     $.fn.moveDown = function() {
       var el = $(this);
